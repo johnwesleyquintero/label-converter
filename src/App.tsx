@@ -8,6 +8,7 @@ import {
   type ProcessingResult,
   type PageInfo,
 } from './utils/pdfProcessor';
+import { downloadSamplePDF } from './utils/samplePDF';
 
 type AppState = 'idle' | 'uploaded' | 'processing' | 'complete' | 'error';
 type Theme = 'dark' | 'light';
@@ -272,19 +273,20 @@ function App() {
         >
           {/* Upload Zone */}
           {(state === 'idle' || state === 'error') && (
-            <div
-              onDrop={handleDrop}
-              onDragOver={handleDragOver}
-              onDragLeave={handleDragLeave}
-              onClick={() => fileInputRef.current?.click()}
-              className="relative rounded-xl p-12 text-center cursor-pointer transition-all duration-200 overflow-hidden"
-              style={{
-                border: `2px dashed ${isDragging ? '#25F4EE' : 'var(--border-color)'}`,
-                backgroundColor: isDragging
-                  ? (isDark ? 'rgba(37, 244, 238, 0.05)' : 'rgba(254, 44, 85, 0.03)')
-                  : 'transparent',
-              }}
-            >
+            <>
+              <div
+                onDrop={handleDrop}
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                onClick={() => fileInputRef.current?.click()}
+                className="relative rounded-xl p-12 text-center cursor-pointer transition-all duration-200 overflow-hidden"
+                style={{
+                  border: `2px dashed ${isDragging ? '#25F4EE' : 'var(--border-color)'}`,
+                  backgroundColor: isDragging
+                    ? (isDark ? 'rgba(37, 244, 238, 0.05)' : 'rgba(254, 44, 85, 0.03)')
+                    : 'transparent',
+                }}
+              >
               {/* Background gradient decoration */}
               <div className="absolute inset-0 opacity-5 pointer-events-none">
                 <div className="absolute -top-10 -left-10 w-40 h-40 rounded-full" style={{ backgroundColor: '#25F4EE' }} />
@@ -331,6 +333,51 @@ function App() {
                 }}
               />
             </div>
+
+            {/* Sample PDF Download */}
+            <div className="mt-4 p-4 rounded-lg" style={{ backgroundColor: 'var(--bg-input)', border: '1px solid var(--border-color)' }}>
+              <div className="flex items-start gap-3">
+                <div className="flex-shrink-0 mt-0.5">
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                    <circle cx="10" cy="10" r="9" stroke="#25F4EE" strokeWidth="2"/>
+                    <path d="M10 6v8M6 10l4 4 4-4" stroke="#25F4EE" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </div>
+                <div className="flex-1">
+                  <p className="text-sm font-medium mb-1" style={{ color: 'var(--text-primary)' }}>
+                    Need a test file?
+                  </p>
+                  <p className="text-xs mb-3" style={{ color: 'var(--text-muted)' }}>
+                    Download a sample TikTok FBT PDF with 2 duplicate labels per page to test the converter.
+                  </p>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => downloadSamplePDF(1)}
+                      className="px-3 py-1.5 text-xs font-medium rounded-lg transition-all duration-200"
+                      style={{
+                        backgroundColor: isDark ? 'rgba(37, 244, 238, 0.1)' : 'rgba(37, 244, 238, 0.08)',
+                        color: '#25F4EE',
+                        border: '1px solid rgba(37, 244, 238, 0.3)',
+                      }}
+                    >
+                      1 Page (2 labels)
+                    </button>
+                    <button
+                      onClick={() => downloadSamplePDF(3)}
+                      className="px-3 py-1.5 text-xs font-medium rounded-lg transition-all duration-200"
+                      style={{
+                        backgroundColor: isDark ? 'rgba(254, 44, 85, 0.1)' : 'rgba(254, 44, 85, 0.08)',
+                        color: '#FE2C55',
+                        border: '1px solid rgba(254, 44, 85, 0.3)',
+                      }}
+                    >
+                      3 Pages (6 labels)
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            </>
           )}
 
           {/* Error Message */}

@@ -38,11 +38,29 @@ npm run build
 ## 📋 Usage
 
 1. **Upload** your TikTok FBT PDF (drag & drop or click to browse)
+   - **No test file?** Download a sample PDF using the buttons below the upload zone
+   - Choose between 1-page (2 labels) or 3-page (6 labels) samples
 2. **Review** the detected page count and label configuration
 3. **Configure** layout if needed (labels per page, direction)
 4. **Click** "Convert Labels"
 5. **Preview** the output to verify barcode readability
 6. **Download** the 4×6 PDF
+
+### Sample PDFs
+
+The app includes built-in sample PDF generators for testing:
+
+- **1 Page (2 labels)** — Single page with 2 duplicate labels stacked vertically
+- **3 Pages (6 labels)** — Three pages with 2 labels each (6 total)
+
+These samples include:
+- Realistic shipping label layout (FROM/TO addresses)
+- Barcodes (Code 128 style)
+- QR codes
+- Order IDs and tracking numbers
+- Weight and service information
+
+Use these to verify the converter works correctly before processing your actual TikTok FBT PDFs.
 
 ## 🔧 Configuration
 
