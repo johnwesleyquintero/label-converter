@@ -4,17 +4,32 @@ import { jsPDF } from 'jspdf';
 // Configure PDF.js worker
 pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js`;
 
+/**
+ * Conversion mode:
+ * - 'duplicate-pages': Each label appears on consecutive pages (page 1 = page 2, page 3 = page 4, etc.)
+ *                       Keep only every Nth page (default: odd pages)
+ * - 'multi-label-page': Multiple labels stacked on a single page (less common)
+ */
+export type ConversionMode = 'duplicate-pages' | 'multi-label-page';
+
 export interface LabelConfig {
-  labelsPerPage: number; // Number of labels per source page
-  layout: 'vertical' | 'horizontal'; // How labels are arranged
-  sourceWidth: number; // Source page width in points
-  sourceHeight: number; // Source page height in points
+  mode: ConversionMode;
+  // For duplicate-pages mode:
+  duplicateEvery: number; // Keep 1 out of every N pages (default: 2)
+  keepOffset: number;     // Which page in the group to keep (0 = first, 1 = second, etc.)
+  // For multi-label-page mode:
+  labelsPerPage: number;
+  layout: 'vertical' | 'horizontal';
+  // Source info:
+  sourceWidth: number;
+  sourceHeight: number;
 }
 
 export interface ProcessingResult {
   labels: string[]; // Data URLs for each label image
   pageCount: number;
   labelCount: number;
+  skippedPages: number;
   warnings: string[];
 }
 
@@ -26,7 +41,6 @@ export interface PageInfo {
 // Target label size: 4 × 6 inches
 const TARGET_WIDTH_IN = 4;
 const TARGET_HEIGHT_IN = 6;
-const POINTS_PER_INCH = 72;
 
 // Render scale for high quality output (preserves barcode readability)
 const RENDER_SCALE = 3;
@@ -50,10 +64,18 @@ export async function getPDFInfo(file: File): Promise<{ pageCount: number; pages
   return { pageCount, pages };
 }
 
+/**
+ * Detect default config based on page geometry.
+ * TikTok FBT typically has 1 label per page, with duplicate consecutive pages.
+ * Page size is usually letter (8.5 × 11 in = 612 × 792 pts).
+ */
 export function detectLabelConfig(pages: PageInfo[]): LabelConfig {
   const firstPage = pages[0];
   if (!firstPage) {
     return {
+      mode: 'duplicate-pages',
+      duplicateEvery: 2,
+      keepOffset: 0,
       labelsPerPage: 2,
       layout: 'vertical',
       sourceWidth: 612,
@@ -61,13 +83,13 @@ export function detectLabelConfig(pages: PageInfo[]): LabelConfig {
     };
   }
 
-  // Detect orientation: if page is taller than wide, labels are likely stacked vertically
-  const layout: 'vertical' | 'horizontal' = firstPage.height > firstPage.width ? 'vertical' : 'horizontal';
-
-  // TikTok FBT typically has 2 duplicate labels per page
+  // Default to duplicate-pages mode (the TikTok FBT issue)
   return {
+    mode: 'duplicate-pages',
+    duplicateEvery: 2,
+    keepOffset: 0,
     labelsPerPage: 2,
-    layout,
+    layout: firstPage.height > firstPage.width ? 'vertical' : 'horizontal',
     sourceWidth: firstPage.width,
     sourceHeight: firstPage.height,
   };
@@ -86,7 +108,6 @@ async function renderPageToCanvas(
   canvas.height = Math.floor(viewport.height);
 
   const ctx = canvas.getContext('2d')!;
-  // White background
   ctx.fillStyle = 'white';
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -106,7 +127,6 @@ function extractLabelsFromCanvas(
   const { labelsPerPage, layout } = config;
 
   if (labelsPerPage === 1) {
-    // Single label per page - use the entire page
     labels.push(canvas.toDataURL('image/png', 1.0));
     return labels;
   }
@@ -161,40 +181,71 @@ export async function processPDF(
   const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
   const warnings: string[] = [];
   const allLabels: string[] = [];
-
   const totalPages = pdf.numPages;
+  let skippedPages = 0;
 
-  for (let i = 1; i <= totalPages; i++) {
-    try {
-      const canvas = await renderPageToCanvas(pdf, i, RENDER_SCALE);
-      const labels = extractLabelsFromCanvas(canvas, config);
-      allLabels.push(...labels);
-    } catch (err) {
-      console.error(`Error processing page ${i}:`, err);
-      warnings.push(`Page ${i} could not be processed and was skipped.`);
+  if (config.mode === 'duplicate-pages') {
+    // Keep only every Nth page (deduplicate)
+    const { duplicateEvery, keepOffset } = config;
+
+    for (let i = 1; i <= totalPages; i++) {
+      const positionInGroup = (i - 1) % duplicateEvery;
+
+      if (positionInGroup === keepOffset) {
+        // Keep this page
+        try {
+          const canvas = await renderPageToCanvas(pdf, i, RENDER_SCALE);
+          const labels = extractLabelsFromCanvas(canvas, { ...config, labelsPerPage: 1, layout: 'vertical' });
+          allLabels.push(...labels);
+        } catch (err) {
+          console.error(`Error processing page ${i}:`, err);
+          warnings.push(`Page ${i} could not be processed and was skipped.`);
+        }
+      } else {
+        // Skip duplicate page
+        skippedPages++;
+      }
+
+      if (onProgress) {
+        onProgress(Math.round((i / totalPages) * 90));
+      }
     }
 
-    if (onProgress) {
-      onProgress(Math.round((i / totalPages) * 90)); // Reserve 10% for PDF generation
+    // Warn if total pages not evenly divisible
+    if (totalPages % duplicateEvery !== 0) {
+      warnings.push(
+        `${totalPages} pages is not evenly divisible by ${duplicateEvery}. Last group may be incomplete.`
+      );
+    }
+  } else {
+    // multi-label-page mode
+    for (let i = 1; i <= totalPages; i++) {
+      try {
+        const canvas = await renderPageToCanvas(pdf, i, RENDER_SCALE);
+        const labels = extractLabelsFromCanvas(canvas, config);
+        allLabels.push(...labels);
+      } catch (err) {
+        console.error(`Error processing page ${i}:`, err);
+        warnings.push(`Page ${i} could not be processed and was skipped.`);
+      }
+
+      if (onProgress) {
+        onProgress(Math.round((i / totalPages) * 90));
+      }
     }
   }
 
   pdf.destroy();
 
   if (allLabels.length === 0) {
-    warnings.push('No labels detected. Please check the input file and layout configuration.');
-  }
-
-  if (totalPages > 0 && allLabels.length !== totalPages * config.labelsPerPage) {
-    warnings.push(
-      `Expected ${totalPages * config.labelsPerPage} labels but extracted ${allLabels.length}. Some pages may have been skipped.`
-    );
+    warnings.push('No labels detected. Please check the input file and configuration.');
   }
 
   return {
     labels: allLabels,
     pageCount: totalPages,
     labelCount: allLabels.length,
+    skippedPages,
     warnings,
   };
 }

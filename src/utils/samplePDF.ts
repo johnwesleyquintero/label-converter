@@ -1,11 +1,14 @@
 import { jsPDF } from 'jspdf';
 
 /**
- * Generate a sample TikTok FBT PDF with 2 duplicate labels per page
- * This mimics the typical format: letter-size page with 2 stacked labels
+ * Generate a sample TikTok FBT PDF with duplicate pages
+ * This simulates the actual issue: each label appears on 2 consecutive pages
+ * Page 1 = Label A, Page 2 = Label A (duplicate)
+ * Page 3 = Label B, Page 4 = Label B (duplicate)
+ * etc.
  */
-export function generateSamplePDF(numPages: number = 1): Blob {
-  // Standard letter size: 8.5 × 11 inches
+export function generateSamplePDF(numLabels: number = 2): Blob {
+  // Standard letter size: 8.5 × 11 inches (what TikTok FBT uses)
   const pdf = new jsPDF({
     orientation: 'portrait',
     unit: 'in',
@@ -14,19 +17,15 @@ export function generateSamplePDF(numPages: number = 1): Blob {
 
   const pageWidth = 8.5;
   const pageHeight = 11;
-  const labelHeight = pageHeight / 2; // Each label takes half the page
-  const margin = 0.25;
-  const labelWidth = pageWidth - (margin * 2);
+  const margin = 0.5;
 
-  for (let page = 0; page < numPages; page++) {
-    if (page > 0) {
-      pdf.addPage('letter', 'portrait');
-    }
-
-    // Generate 2 duplicate labels per page
-    for (let labelIndex = 0; labelIndex < 2; labelIndex++) {
-      const yOffset = labelIndex * labelHeight;
-      generateLabel(pdf, yOffset, labelWidth, labelHeight, margin, page + 1, labelIndex + 1);
+  for (let labelNum = 1; labelNum <= numLabels; labelNum++) {
+    // Generate 2 identical pages for each label (the duplicate issue)
+    for (let duplicate = 0; duplicate < 2; duplicate++) {
+      if (labelNum > 1 || duplicate > 0) {
+        pdf.addPage('letter', 'portrait');
+      }
+      generateLabel(pdf, pageWidth, pageHeight, margin, labelNum, duplicate + 1);
     }
   }
 
@@ -35,98 +34,109 @@ export function generateSamplePDF(numPages: number = 1): Blob {
 
 function generateLabel(
   pdf: jsPDF,
-  yOffset: number,
-  width: number,
-  height: number,
+  pageWidth: number,
+  pageHeight: number,
   margin: number,
-  pageNum: number,
-  labelNum: number
+  labelNum: number,
+  duplicateNum: number
 ) {
+  const contentWidth = pageWidth - (margin * 2);
+  const contentHeight = pageHeight - (margin * 2);
   const x = margin;
-  const y = yOffset + margin;
-  const contentWidth = width - (margin * 2);
-  const contentHeight = height - (margin * 2);
+  const y = margin;
 
   // Draw label border
-  pdf.setDrawColor(0);
-  pdf.setLineWidth(0.01);
+  pdf.setDrawColor(0, 0, 0);
+  pdf.setLineWidth(0.02);
   pdf.rect(x, y, contentWidth, contentHeight);
 
-  let currentY = y + 0.15;
+  let currentY = y + 0.3;
 
   // Header: TikTok FBT
-  pdf.setFontSize(10);
+  pdf.setFontSize(14);
   pdf.setFont('helvetica', 'bold');
-  pdf.text('TikTok FBT', x + 0.15, currentY);
-  currentY += 0.15;
-
-  pdf.setFontSize(7);
-  pdf.setFont('helvetica', 'normal');
-  pdf.text('Fulfilled by TikTok', x + 0.15, currentY);
-  currentY += 0.25;
-
-  // FROM section
-  pdf.setFontSize(8);
-  pdf.setFont('helvetica', 'bold');
-  pdf.text('FROM:', x + 0.15, currentY);
-  currentY += 0.12;
-
-  pdf.setFontSize(7);
-  pdf.setFont('helvetica', 'normal');
-  pdf.text('TikTok Fulfillment Center', x + 0.15, currentY);
-  currentY += 0.1;
-  pdf.text('1234 Warehouse Blvd', x + 0.15, currentY);
-  currentY += 0.1;
-  pdf.text('Los Angeles, CA 90001', x + 0.15, currentY);
+  pdf.text('TikTok FBT', x + 0.2, currentY);
   currentY += 0.2;
-
-  // TO section
-  pdf.setFontSize(8);
-  pdf.setFont('helvetica', 'bold');
-  pdf.text('SHIP TO:', x + 0.15, currentY);
-  currentY += 0.12;
 
   pdf.setFontSize(9);
-  pdf.setFont('helvetica', 'bold');
-  pdf.text('John Smith', x + 0.15, currentY);
-  currentY += 0.12;
-
-  pdf.setFontSize(7);
   pdf.setFont('helvetica', 'normal');
-  pdf.text('5678 Customer Street, Apt 4B', x + 0.15, currentY);
-  currentY += 0.1;
-  pdf.text('New York, NY 10001', x + 0.15, currentY);
-  currentY += 0.1;
-  pdf.text('United States', x + 0.15, currentY);
-  currentY += 0.25;
+  pdf.text('Fulfilled by TikTok - Carton Label', x + 0.2, currentY);
+  currentY += 0.4;
+
+  // FROM section
+  pdf.setFontSize(10);
+  pdf.setFont('helvetica', 'bold');
+  pdf.text('FROM:', x + 0.2, currentY);
+  currentY += 0.18;
+
+  pdf.setFontSize(9);
+  pdf.setFont('helvetica', 'normal');
+  pdf.text('TikTok Fulfillment Center', x + 0.2, currentY);
+  currentY += 0.15;
+  pdf.text('1234 Warehouse Blvd', x + 0.2, currentY);
+  currentY += 0.15;
+  pdf.text('Los Angeles, CA 90001', x + 0.2, currentY);
+  currentY += 0.15;
+  pdf.text('United States', x + 0.2, currentY);
+  currentY += 0.35;
+
+  // TO section
+  pdf.setFontSize(10);
+  pdf.setFont('helvetica', 'bold');
+  pdf.text('SHIP TO:', x + 0.2, currentY);
+  currentY += 0.18;
+
+  pdf.setFontSize(12);
+  pdf.setFont('helvetica', 'bold');
+  pdf.text('Amazon AWD', x + 0.2, currentY);
+  currentY += 0.18;
+
+  pdf.setFontSize(9);
+  pdf.setFont('helvetica', 'normal');
+  pdf.text('5678 Distribution Center Dr', x + 0.2, currentY);
+  currentY += 0.15;
+  pdf.text('Dock 4B', x + 0.2, currentY);
+  currentY += 0.15;
+  pdf.text('Memphis, TN 38118', x + 0.2, currentY);
+  currentY += 0.15;
+  pdf.text('United States', x + 0.2, currentY);
+  currentY += 0.4;
 
   // Order info
-  pdf.setFontSize(7);
+  pdf.setFontSize(9);
   pdf.setFont('helvetica', 'bold');
-  pdf.text('Order ID:', x + 0.15, currentY);
+  pdf.text('Carton ID:', x + 0.2, currentY);
   pdf.setFont('helvetica', 'normal');
-  pdf.text(`TT-${Date.now().toString().slice(-8)}-${pageNum}${labelNum}`, x + 0.7, currentY);
-  currentY += 0.12;
+  const cartonId = `TT-CARTON-${String(labelNum).padStart(4, '0')}`;
+  pdf.text(cartonId, x + 1.1, currentY);
+  currentY += 0.18;
 
   pdf.setFont('helvetica', 'bold');
-  pdf.text('Tracking:', x + 0.15, currentY);
+  pdf.text('Tracking:', x + 0.2, currentY);
   pdf.setFont('helvetica', 'normal');
-  pdf.text(`1Z999AA1${String(pageNum).padStart(2, '0')}${String(labelNum).padStart(2, '0')}9999`, x + 0.7, currentY);
-  currentY += 0.2;
+  const trackingNum = `1Z999AA1012345678${String(labelNum).padStart(2, '0')}`;
+  pdf.text(trackingNum, x + 1.1, currentY);
+  currentY += 0.18;
+
+  pdf.setFont('helvetica', 'bold');
+  pdf.text('PO Number:', x + 0.2, currentY);
+  pdf.setFont('helvetica', 'normal');
+  pdf.text(`PO-${2024000 + labelNum}`, x + 1.1, currentY);
+  currentY += 0.35;
 
   // Barcode (Code 128 simulation)
   const barcodeY = currentY;
-  const barcodeWidth = 2.5;
-  const barcodeHeight = 0.4;
+  const barcodeWidth = 4.0;
+  const barcodeHeight = 0.6;
 
   // Draw barcode lines
   pdf.setFillColor(0, 0, 0);
-  const barcodeX = x + 0.15;
-  const numBars = 40;
+  const barcodeX = x + 0.2;
+  const numBars = 60;
   const barWidth = barcodeWidth / numBars;
 
   for (let i = 0; i < numBars; i++) {
-    // Simulate barcode pattern (alternating thick/thin bars)
+    // Simulate barcode pattern
     const isBar = i % 2 === 0;
     const thickness = (i % 4 === 0) ? barWidth * 1.5 : barWidth * 0.8;
     if (isBar) {
@@ -135,24 +145,24 @@ function generateLabel(
   }
 
   // Barcode text
-  pdf.setFontSize(6);
+  pdf.setFontSize(8);
   pdf.setFont('helvetica', 'normal');
-  pdf.text(`1Z999AA1${String(pageNum).padStart(2, '0')}${String(labelNum).padStart(2, '0')}9999`, barcodeX, barcodeY + barcodeHeight + 0.08);
+  pdf.text(trackingNum, barcodeX, barcodeY + barcodeHeight + 0.12);
 
-  currentY = barcodeY + barcodeHeight + 0.25;
+  currentY = barcodeY + barcodeHeight + 0.35;
 
   // QR Code (simplified simulation)
-  const qrSize = 0.6;
-  const qrX = x + contentWidth - qrSize - 0.15;
-  const qrY = y + 0.15;
+  const qrSize = 0.9;
+  const qrX = x + contentWidth - qrSize - 0.2;
+  const qrY = y + 0.3;
 
   // Draw QR code border
   pdf.setDrawColor(0, 0, 0);
-  pdf.setLineWidth(0.005);
+  pdf.setLineWidth(0.01);
   pdf.rect(qrX, qrY, qrSize, qrSize);
 
-  // Draw QR pattern (simplified)
-  const qrCellSize = qrSize / 21; // Standard QR is 21x21 for version 1
+  // Draw QR pattern
+  const qrCellSize = qrSize / 21;
   pdf.setFillColor(0, 0, 0);
 
   // Corner markers
@@ -167,59 +177,68 @@ function generateLabel(
       if ((row < 8 && col < 8) || (row < 8 && col > 12) || (row > 12 && col < 8)) {
         continue;
       }
-      // Random fill pattern
-      if (Math.random() > 0.5) {
+      // Deterministic pattern based on label number
+      if ((row * 7 + col * 13 + labelNum * 3) % 3 === 0) {
         pdf.rect(qrX + (col * qrCellSize), qrY + (row * qrCellSize), qrCellSize, qrCellSize, 'F');
       }
     }
   }
 
   // Weight and service
+  pdf.setFontSize(9);
+  pdf.setFont('helvetica', 'bold');
+  pdf.text('Weight:', x + 0.2, currentY);
+  pdf.setFont('helvetica', 'normal');
+  pdf.text('2.5 lbs', x + 0.9, currentY);
+
+  pdf.setFont('helvetica', 'bold');
+  pdf.text('Service:', x + 2.0, currentY);
+  pdf.setFont('helvetica', 'normal');
+  pdf.text('Ground', x + 2.7, currentY);
+
+  currentY += 0.2;
+
+  // Dimensions
+  pdf.setFont('helvetica', 'bold');
+  pdf.text('Dimensions:', x + 0.2, currentY);
+  pdf.setFont('helvetica', 'normal');
+  pdf.text('12" × 10" × 8"', x + 1.2, currentY);
+
+  currentY += 0.35;
+
+  // Footer info
   pdf.setFontSize(7);
-  pdf.setFont('helvetica', 'bold');
-  pdf.text('WT:', x + 0.15, currentY);
   pdf.setFont('helvetica', 'normal');
-  pdf.text('2.5 lbs', x + 0.35, currentY);
-
-  pdf.setFont('helvetica', 'bold');
-  pdf.text('Service:', x + 1.2, currentY);
-  pdf.setFont('helvetica', 'normal');
-  pdf.text('Ground', x + 1.6, currentY);
-
-  currentY += 0.15;
-
-  // Package info
-  pdf.setFontSize(6);
-  pdf.setFont('helvetica', 'normal');
-  pdf.text(`Page ${pageNum} | Label ${labelNum} of 2 (Duplicate)`, x + 0.15, currentY);
+  pdf.text(`Label ${labelNum} | Page ${duplicateNum} of 2 (Duplicate)`, x + 0.2, currentY);
+  pdf.text('Amazon AWD Compliant Format', x + contentWidth - 2.5, currentY);
 }
 
 function drawQRMarker(pdf: jsPDF, x: number, y: number, size: number) {
   // Outer square
   pdf.setFillColor(0, 0, 0);
-  pdf.rect(x, y, size, size, 'F' as const);
+  pdf.rect(x, y, size, size, 'F');
 
   // Inner white square
   pdf.setFillColor(255, 255, 255);
   const innerMargin = size / 7;
-  pdf.rect(x + innerMargin, y + innerMargin, size - (innerMargin * 2), size - (innerMargin * 2), 'F' as const);
+  pdf.rect(x + innerMargin, y + innerMargin, size - (innerMargin * 2), size - (innerMargin * 2), 'F');
 
   // Center square
   pdf.setFillColor(0, 0, 0);
   const centerSize = size / 2.5;
   const centerOffset = (size - centerSize) / 2;
-  pdf.rect(x + centerOffset, y + centerOffset, centerSize, centerSize, 'F' as const);
+  pdf.rect(x + centerOffset, y + centerOffset, centerSize, centerSize, 'F');
 }
 
 /**
  * Download the sample PDF
  */
-export function downloadSamplePDF(numPages: number = 1) {
-  const blob = generateSamplePDF(numPages);
+export function downloadSamplePDF(numLabels: number = 2) {
+  const blob = generateSamplePDF(numLabels);
   const url = URL.createObjectURL(blob);
   const link = document.createElement('a');
   link.href = url;
-  link.download = `tiktok-fbt-sample-${numPages}-page${numPages !== 1 ? 's' : ''}.pdf`;
+  link.download = `tiktok-fbt-sample-${numLabels}-labels-${numLabels * 2}-pages.pdf`;
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
