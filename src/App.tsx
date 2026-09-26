@@ -17,7 +17,6 @@ type Theme = 'dark' | 'light';
 function TikTokLogo({ size = 32 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
-      {/* Cyan offset */}
       <g transform="translate(-6, -6)">
         <rect x="130" y="80" width="252" height="340" rx="16" fill="none" stroke="#25F4EE" strokeWidth="12"/>
         <line x1="165" y1="140" x2="347" y2="140" stroke="#25F4EE" strokeWidth="10" strokeLinecap="round"/>
@@ -25,7 +24,6 @@ function TikTokLogo({ size = 32 }: { size?: number }) {
         <line x1="165" y1="220" x2="330" y2="220" stroke="#25F4EE" strokeWidth="10" strokeLinecap="round"/>
         <rect x="165" y="280" width="182" height="80" rx="4" fill="none" stroke="#25F4EE" strokeWidth="6"/>
       </g>
-      {/* Red offset */}
       <g transform="translate(6, 6)">
         <rect x="130" y="80" width="252" height="340" rx="16" fill="none" stroke="#FE2C55" strokeWidth="12"/>
         <line x1="165" y1="140" x2="347" y2="140" stroke="#FE2C55" strokeWidth="10" strokeLinecap="round"/>
@@ -33,7 +31,6 @@ function TikTokLogo({ size = 32 }: { size?: number }) {
         <line x1="165" y1="220" x2="330" y2="220" stroke="#FE2C55" strokeWidth="10" strokeLinecap="round"/>
         <rect x="165" y="280" width="182" height="80" rx="4" fill="none" stroke="#FE2C55" strokeWidth="6"/>
       </g>
-      {/* White main */}
       <g>
         <rect x="130" y="80" width="252" height="340" rx="16" fill="none" stroke="currentColor" strokeWidth="12"/>
         <line x1="165" y1="140" x2="347" y2="140" stroke="currentColor" strokeWidth="10" strokeLinecap="round"/>
@@ -75,6 +72,184 @@ function ThemeToggle({ theme, onToggle }: { theme: Theme; onToggle: () => void }
   );
 }
 
+// Help Modal
+function HelpModal({ isOpen, onClose, isDark }: { isOpen: boolean; onClose: () => void; isDark: boolean }) {
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={onClose}>
+      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+      <div
+        className="relative max-w-2xl w-full max-h-[90vh] overflow-y-auto rounded-2xl p-6 animate-slide-up"
+        style={{
+          backgroundColor: 'var(--bg-card)',
+          border: '1px solid var(--border-color)',
+        }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Header */}
+        <div className="flex items-start justify-between mb-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ backgroundColor: 'rgba(37, 244, 238, 0.1)' }}>
+              <svg className="w-5 h-5" fill="#25F4EE" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+              </svg>
+            </div>
+            <div>
+              <h2 className="text-lg font-bold" style={{ color: 'var(--text-primary)' }}>
+                Why This Tool Exists
+              </h2>
+              <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
+                The problem we're solving
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={onClose}
+            className="p-1 rounded-lg transition-colors"
+            style={{ color: 'var(--text-muted)' }}
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        {/* Content */}
+        <div className="space-y-4">
+          {/* Problem */}
+          <div className="p-4 rounded-lg" style={{ backgroundColor: 'rgba(254, 44, 85, 0.05)', border: '1px solid rgba(254, 44, 85, 0.2)' }}>
+            <div className="flex items-center gap-2 mb-2">
+              <svg className="w-4 h-4" fill="#FE2C55" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+              </svg>
+              <h3 className="font-semibold text-sm" style={{ color: '#FE2C55' }}>
+                The Problem
+              </h3>
+            </div>
+            <ul className="space-y-2 text-sm" style={{ color: 'var(--text-secondary)' }}>
+              <li className="flex items-start gap-2">
+                <span style={{ color: '#FE2C55' }}>•</span>
+                <span><strong>Duplicate Carton Labels:</strong> TikTok FBT provides 2 identical labels per carton (for both sides), but Amazon AWD only accepts 1 label per carton.</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span style={{ color: '#FE2C55' }}>•</span>
+                <span><strong>Wrong Format:</strong> Manually removing duplicates changes the PDF format, making labels larger than the required 4×6 inches that Amazon requires.</span>
+              </li>
+            </ul>
+          </div>
+
+          {/* Old Workaround */}
+          <div className="p-4 rounded-lg" style={{ backgroundColor: 'var(--bg-input)', border: '1px solid var(--border-color)' }}>
+            <div className="flex items-center gap-2 mb-2">
+              <svg className="w-4 h-4" style={{ color: 'var(--text-muted)' }} fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 000 2h1v2a1 1 0 102 0v-2h1a1 1 0 100-2H7z" clipRule="evenodd" />
+              </svg>
+              <h3 className="font-semibold text-sm" style={{ color: 'var(--text-muted)' }}>
+                Old Manual Workaround
+              </h3>
+            </div>
+            <ol className="space-y-1.5 text-xs list-decimal list-inside" style={{ color: 'var(--text-muted)' }}>
+              <li>Open TikTok PDF → Print → Manually deselect every 2nd page</li>
+              <li>Save trimmed PDF</li>
+              <li>Upload to ChatGPT</li>
+              <li>Ask ChatGPT to resize to 4×6 inches</li>
+              <li>Download resized PDF</li>
+            </ol>
+            <p className="mt-2 text-xs italic" style={{ color: 'var(--text-muted)' }}>
+              ⏱ Time-consuming, error-prone, requires external tools
+            </p>
+          </div>
+
+          {/* Solution */}
+          <div className="p-4 rounded-lg" style={{ backgroundColor: 'rgba(37, 244, 238, 0.05)', border: '1px solid rgba(37, 244, 238, 0.2)' }}>
+            <div className="flex items-center gap-2 mb-2">
+              <svg className="w-4 h-4" fill="#25F4EE" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+              </svg>
+              <h3 className="font-semibold text-sm" style={{ color: '#25F4EE' }}>
+                The Solution (This Tool)
+              </h3>
+            </div>
+            <ol className="space-y-1.5 text-xs list-decimal list-inside" style={{ color: 'var(--text-secondary)' }}>
+              <li><strong>Upload</strong> TikTok FBT PDF</li>
+              <li><strong>Auto-detect</strong> duplicate pages</li>
+              <li><strong>Remove duplicates</strong> (keep 1 of every 2)</li>
+              <li><strong>Resize</strong> to exact 4×6 inches</li>
+              <li><strong>Download</strong> Amazon-compliant PDF</li>
+            </ol>
+            <p className="mt-2 text-xs italic" style={{ color: '#25F4EE' }}>
+              ⚡ Instant, automated, no external tools needed
+            </p>
+          </div>
+
+          {/* How it works */}
+          <div className="p-4 rounded-lg" style={{ backgroundColor: 'var(--bg-input)', border: '1px solid var(--border-color)' }}>
+            <h3 className="font-semibold text-sm mb-2" style={{ color: 'var(--text-primary)' }}>
+              How It Works
+            </h3>
+            <div className="space-y-2 text-xs" style={{ color: 'var(--text-secondary)' }}>
+              <p>
+                <strong>Input:</strong> TikTok FBT PDF with duplicate pages
+                <br />
+                <span style={{ color: 'var(--text-muted)' }}>
+                  Example: 10 pages → Pages 1,2 are Label A | Pages 3,4 are Label B | etc.
+                </span>
+              </p>
+              <p>
+                <strong>Processing:</strong>
+                <br />
+                <span style={{ color: 'var(--text-muted)' }}>
+                  • Keep only odd pages (1, 3, 5, 7, 9)<br />
+                  • Skip duplicate pages (2, 4, 6, 8, 10)<br />
+                  • Render each kept page at 3× quality for barcode clarity<br />
+                  • Place each label on its own 4×6 inch page
+                </span>
+              </p>
+              <p>
+                <strong>Output:</strong> Amazon-compliant 4×6 PDF
+                <br />
+                <span style={{ color: 'var(--text-muted)' }}>
+                  Result: 5 pages → 5 unique labels, each on a 4×6 inch page
+                </span>
+              </p>
+            </div>
+          </div>
+
+          {/* Configuration */}
+          <div className="p-4 rounded-lg" style={{ backgroundColor: 'var(--bg-input)', border: '1px solid var(--border-color)' }}>
+            <h3 className="font-semibold text-sm mb-2" style={{ color: 'var(--text-primary)' }}>
+              Configuration Options
+            </h3>
+            <div className="space-y-2 text-xs" style={{ color: 'var(--text-secondary)' }}>
+              <p>
+                <strong>Duplicate every N pages:</strong> Default is 2 (TikTok FBT standard). Adjust if your PDF has a different duplicate pattern.
+              </p>
+              <p>
+                <strong>Keep offset:</strong> Which page in each group to keep. Default is 0 (first page). Use 1 if duplicates come first.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div className="mt-6 pt-4" style={{ borderTop: '1px solid var(--border-color)' }}>
+          <button
+            onClick={onClose}
+            className="w-full py-2.5 rounded-lg font-medium text-sm transition-all"
+            style={{
+              background: 'linear-gradient(135deg, #25F4EE, #1AD4CE)',
+              color: '#000000',
+            }}
+          >
+            Got it
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function App() {
   const [theme, setTheme] = useState<Theme>(() => {
     const saved = localStorage.getItem('tt-label-theme') as Theme;
@@ -89,11 +264,11 @@ function App() {
   const [error, setError] = useState<string | null>(null);
   const [outputUrl, setOutputUrl] = useState<string | null>(null);
   const [showConfig, setShowConfig] = useState(false);
+  const [showHelp, setShowHelp] = useState(false);
   const [previewPage, setPreviewPage] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Apply theme to document
   useEffect(() => {
     document.documentElement.classList.remove('light', 'dark');
     document.documentElement.classList.add(theme);
@@ -101,7 +276,6 @@ function App() {
     localStorage.setItem('tt-label-theme', theme);
   }, [theme]);
 
-  // Cleanup URLs on unmount
   useEffect(() => {
     return () => {
       if (outputUrl) URL.revokeObjectURL(outputUrl);
@@ -175,20 +349,11 @@ function App() {
       setResult(processingResult);
 
       if (processingResult.labels.length > 0) {
-        const { sourceWidth, sourceHeight, labelsPerPage, layout } = config;
-        let labelW: number, labelH: number;
-
-        if (layout === 'vertical') {
-          labelW = sourceWidth;
-          labelH = sourceHeight / labelsPerPage;
-        } else {
-          labelW = sourceWidth / labelsPerPage;
-          labelH = sourceHeight;
-        }
+        const { sourceWidth, sourceHeight } = config;
 
         const { blob } = generateOutputPDFSmart(processingResult.labels, {
-          width: labelW,
-          height: labelH,
+          width: sourceWidth,
+          height: sourceHeight,
         });
 
         const url = URL.createObjectURL(blob);
@@ -236,7 +401,12 @@ function App() {
     setConfig({ ...config, ...updates });
   }, [config]);
 
-  const totalExpectedLabels = pageInfo && config ? pageInfo.pageCount * config.labelsPerPage : 0;
+  const expectedLabels = pageInfo && config
+    ? config.mode === 'duplicate-pages'
+      ? Math.floor(pageInfo.pageCount / config.duplicateEvery)
+      : pageInfo.pageCount * config.labelsPerPage
+    : 0;
+
   const isDark = theme === 'dark';
 
   return (
@@ -245,9 +415,7 @@ function App() {
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-3">
-            <div className="relative">
-              <TikTokLogo size={36} />
-            </div>
+            <TikTokLogo size={36} />
             <div>
               <h1 className="text-lg font-bold" style={{ color: 'var(--text-primary)' }}>
                 <span style={{ color: '#25F4EE' }}>TikTok</span>
@@ -260,7 +428,22 @@ function App() {
               </p>
             </div>
           </div>
-          <ThemeToggle theme={theme} onToggle={toggleTheme} />
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setShowHelp(true)}
+              className="p-2 rounded-lg transition-colors"
+              style={{
+                backgroundColor: isDark ? 'rgba(37, 244, 238, 0.1)' : 'rgba(37, 244, 238, 0.08)',
+                color: '#25F4EE',
+              }}
+              aria-label="Help"
+            >
+              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+              </svg>
+            </button>
+            <ThemeToggle theme={theme} onToggle={toggleTheme} />
+          </div>
         </div>
 
         {/* Main Content */}
@@ -268,7 +451,7 @@ function App() {
           className="rounded-2xl p-6 animate-slide-up"
           style={{
             backgroundColor: 'var(--bg-card)',
-            border: `1px solid var(--border-color)`,
+            border: '1px solid var(--border-color)',
           }}
         >
           {/* Upload Zone */}
@@ -287,96 +470,94 @@ function App() {
                     : 'transparent',
                 }}
               >
-              {/* Background gradient decoration */}
-              <div className="absolute inset-0 opacity-5 pointer-events-none">
-                <div className="absolute -top-10 -left-10 w-40 h-40 rounded-full" style={{ backgroundColor: '#25F4EE' }} />
-                <div className="absolute -bottom-10 -right-10 w-40 h-40 rounded-full" style={{ backgroundColor: '#FE2C55' }} />
-              </div>
+                <div className="absolute inset-0 opacity-5 pointer-events-none">
+                  <div className="absolute -top-10 -left-10 w-40 h-40 rounded-full" style={{ backgroundColor: '#25F4EE' }} />
+                  <div className="absolute -bottom-10 -right-10 w-40 h-40 rounded-full" style={{ backgroundColor: '#FE2C55' }} />
+                </div>
 
-              <div className="relative">
-                <div className="mb-4 flex justify-center">
-                  <div className="relative">
-                    {/* TikTok-style upload icon with dual color offset */}
-                    <svg className="absolute -top-1 -left-1" width="56" height="56" viewBox="0 0 56 56" fill="none">
-                      <path d="M28 8v28M16 24l12-12 12 12" stroke="#25F4EE" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+                <div className="relative">
+                  <div className="mb-4 flex justify-center">
+                    <div className="relative">
+                      <svg className="absolute -top-1 -left-1" width="56" height="56" viewBox="0 0 56 56" fill="none">
+                        <path d="M28 8v28M16 24l12-12 12 12" stroke="#25F4EE" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                      <svg className="absolute top-1 left-1" width="56" height="56" viewBox="0 0 56 56" fill="none">
+                        <path d="M28 8v28M16 24l12-12 12 12" stroke="#FE2C55" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                      <svg width="56" height="56" viewBox="0 0 56 56" fill="none">
+                        <path d="M28 8v28M16 24l12-12 12 12" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" style={{ color: 'var(--text-primary)' }}/>
+                        <path d="M8 36v8a4 4 0 004 4h32a4 4 0 004-4v-8" stroke="currentColor" strokeWidth="3" strokeLinecap="round" style={{ color: 'var(--text-primary)' }}/>
+                      </svg>
+                    </div>
+                  </div>
+                  <p className="font-semibold mb-1" style={{ color: 'var(--text-primary)' }}>
+                    Drop your TikTok FBT PDF here
+                  </p>
+                  <p className="text-sm" style={{ color: 'var(--text-muted)' }}>
+                    or click to browse files
+                  </p>
+                  <div className="mt-4 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs" style={{ backgroundColor: 'var(--bg-input)', color: 'var(--text-muted)' }}>
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
+                      <path d="M2 2h5l3 3v5a1 1 0 01-1 1H2a1 1 0 01-1-1V3a1 1 0 011-1z"/>
                     </svg>
-                    <svg className="absolute top-1 left-1" width="56" height="56" viewBox="0 0 56 56" fill="none">
-                      <path d="M28 8v28M16 24l12-12 12 12" stroke="#FE2C55" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
-                    <svg width="56" height="56" viewBox="0 0 56 56" fill="none">
-                      <path d="M28 8v28M16 24l12-12 12 12" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" style={{ color: 'var(--text-primary)' }}/>
-                      <path d="M8 36v8a4 4 0 004 4h32a4 4 0 004-4v-8" stroke="currentColor" strokeWidth="3" strokeLinecap="round" style={{ color: 'var(--text-primary)' }}/>
-                    </svg>
+                    PDF files only
                   </div>
                 </div>
-                <p className="font-semibold mb-1" style={{ color: 'var(--text-primary)' }}>
-                  Drop your TikTok FBT PDF here
-                </p>
-                <p className="text-sm" style={{ color: 'var(--text-muted)' }}>
-                  or click to browse files
-                </p>
-                <div className="mt-4 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs" style={{ backgroundColor: 'var(--bg-input)', color: 'var(--text-muted)' }}>
-                  <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
-                    <path d="M2 2h5l3 3v5a1 1 0 01-1 1H2a1 1 0 01-1-1V3a1 1 0 011-1z"/>
-                  </svg>
-                  PDF files only
-                </div>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept=".pdf,application/pdf"
+                  className="hidden"
+                  onChange={(e) => {
+                    const f = e.target.files?.[0];
+                    if (f) handleFileSelect(f);
+                  }}
+                />
               </div>
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept=".pdf,application/pdf"
-                className="hidden"
-                onChange={(e) => {
-                  const f = e.target.files?.[0];
-                  if (f) handleFileSelect(f);
-                }}
-              />
-            </div>
 
-            {/* Sample PDF Download */}
-            <div className="mt-4 p-4 rounded-lg" style={{ backgroundColor: 'var(--bg-input)', border: '1px solid var(--border-color)' }}>
-              <div className="flex items-start gap-3">
-                <div className="flex-shrink-0 mt-0.5">
-                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                    <circle cx="10" cy="10" r="9" stroke="#25F4EE" strokeWidth="2"/>
-                    <path d="M10 6v8M6 10l4 4 4-4" stroke="#25F4EE" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                </div>
-                <div className="flex-1">
-                  <p className="text-sm font-medium mb-1" style={{ color: 'var(--text-primary)' }}>
-                    Need a test file?
-                  </p>
-                  <p className="text-xs mb-3" style={{ color: 'var(--text-muted)' }}>
-                    Download a sample TikTok FBT PDF with 2 duplicate labels per page to test the converter.
-                  </p>
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() => downloadSamplePDF(1)}
-                      className="px-3 py-1.5 text-xs font-medium rounded-lg transition-all duration-200"
-                      style={{
-                        backgroundColor: isDark ? 'rgba(37, 244, 238, 0.1)' : 'rgba(37, 244, 238, 0.08)',
-                        color: '#25F4EE',
-                        border: '1px solid rgba(37, 244, 238, 0.3)',
-                      }}
-                    >
-                      1 Page (2 labels)
-                    </button>
-                    <button
-                      onClick={() => downloadSamplePDF(3)}
-                      className="px-3 py-1.5 text-xs font-medium rounded-lg transition-all duration-200"
-                      style={{
-                        backgroundColor: isDark ? 'rgba(254, 44, 85, 0.1)' : 'rgba(254, 44, 85, 0.08)',
-                        color: '#FE2C55',
-                        border: '1px solid rgba(254, 44, 85, 0.3)',
-                      }}
-                    >
-                      3 Pages (6 labels)
-                    </button>
+              {/* Sample PDF Download */}
+              <div className="mt-4 p-4 rounded-lg" style={{ backgroundColor: 'var(--bg-input)', border: '1px solid var(--border-color)' }}>
+                <div className="flex items-start gap-3">
+                  <div className="flex-shrink-0 mt-0.5">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                      <circle cx="10" cy="10" r="9" stroke="#25F4EE" strokeWidth="2"/>
+                      <path d="M10 6v8M6 10l4 4 4-4" stroke="#25F4EE" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-sm font-medium mb-1" style={{ color: 'var(--text-primary)' }}>
+                      Need a test file?
+                    </p>
+                    <p className="text-xs mb-3" style={{ color: 'var(--text-muted)' }}>
+                      Download a sample TikTok FBT PDF with duplicate pages to test the converter.
+                    </p>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => downloadSamplePDF(2)}
+                        className="px-3 py-1.5 text-xs font-medium rounded-lg transition-all duration-200"
+                        style={{
+                          backgroundColor: isDark ? 'rgba(37, 244, 238, 0.1)' : 'rgba(37, 244, 238, 0.08)',
+                          color: '#25F4EE',
+                          border: '1px solid rgba(37, 244, 238, 0.3)',
+                        }}
+                      >
+                        2 Labels (4 pages)
+                      </button>
+                      <button
+                        onClick={() => downloadSamplePDF(5)}
+                        className="px-3 py-1.5 text-xs font-medium rounded-lg transition-all duration-200"
+                        style={{
+                          backgroundColor: isDark ? 'rgba(254, 44, 85, 0.1)' : 'rgba(254, 44, 85, 0.08)',
+                          color: '#FE2C55',
+                          border: '1px solid rgba(254, 44, 85, 0.3)',
+                        }}
+                      >
+                        5 Labels (10 pages)
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
             </>
           )}
 
@@ -418,8 +599,8 @@ function App() {
                   <div>
                     <p className="font-medium text-sm truncate max-w-[200px]" style={{ color: 'var(--text-primary)' }}>{file.name}</p>
                     <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
-                      {pageInfo?.pageCount} page{pageInfo?.pageCount !== 1 ? 's' : ''} detected
-                      {result && ` • ${result.labelCount} label${result.labelCount !== 1 ? 's' : ''} extracted`}
+                      {pageInfo?.pageCount} pages detected
+                      {result && ` • ${result.labelCount} labels extracted`}
                     </p>
                   </div>
                 </div>
@@ -455,15 +636,16 @@ function App() {
                       <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
                     </svg>
                     <p className="text-xs font-medium" style={{ color: isDark ? '#25F4EE' : '#FE2C55' }}>
-                      Adjust if labels are cut off or misaligned
+                      Adjust if labels are not extracted correctly
                     </p>
                   </div>
+
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="block text-xs mb-1" style={{ color: 'var(--text-muted)' }}>Labels per page</label>
+                      <label className="block text-xs mb-1" style={{ color: 'var(--text-muted)' }}>Duplicate every</label>
                       <select
-                        value={config.labelsPerPage}
-                        onChange={(e) => updateConfig({ labelsPerPage: parseInt(e.target.value) })}
+                        value={config.duplicateEvery}
+                        onChange={(e) => updateConfig({ duplicateEvery: parseInt(e.target.value) })}
                         className="w-full rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 transition-colors"
                         style={{
                           backgroundColor: 'var(--bg-card)',
@@ -471,17 +653,16 @@ function App() {
                           color: 'var(--text-primary)',
                         }}
                       >
-                        <option value={1}>1 label (full page)</option>
-                        <option value={2}>2 labels</option>
-                        <option value={3}>3 labels</option>
-                        <option value={4}>4 labels</option>
+                        <option value={2}>2 pages (TikTok FBT)</option>
+                        <option value={3}>3 pages</option>
+                        <option value={4}>4 pages</option>
                       </select>
                     </div>
                     <div>
-                      <label className="block text-xs mb-1" style={{ color: 'var(--text-muted)' }}>Layout direction</label>
+                      <label className="block text-xs mb-1" style={{ color: 'var(--text-muted)' }}>Keep page</label>
                       <select
-                        value={config.layout}
-                        onChange={(e) => updateConfig({ layout: e.target.value as 'vertical' | 'horizontal' })}
+                        value={config.keepOffset}
+                        onChange={(e) => updateConfig({ keepOffset: parseInt(e.target.value) })}
                         className="w-full rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 transition-colors"
                         style={{
                           backgroundColor: 'var(--bg-card)',
@@ -489,11 +670,13 @@ function App() {
                           color: 'var(--text-primary)',
                         }}
                       >
-                        <option value="vertical">Vertical (stacked ↕)</option>
-                        <option value="horizontal">Horizontal (side by side ↔)</option>
+                        <option value={0}>1st page (default)</option>
+                        <option value={1}>2nd page</option>
+                        <option value={2}>3rd page</option>
                       </select>
                     </div>
                   </div>
+
                   <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
                     Source: {Math.round(config.sourceWidth)}×{Math.round(config.sourceHeight)} pts ({(config.sourceWidth / 72).toFixed(1)}×{(config.sourceHeight / 72).toFixed(1)} in)
                   </p>
@@ -512,12 +695,12 @@ function App() {
                   <div className="flex items-center gap-2">
                     <div className="w-2 h-2 rounded-full" style={{ backgroundColor: '#25F4EE' }} />
                     <p className="text-sm" style={{ color: 'var(--text-primary)' }}>
-                      <span className="font-bold" style={{ color: '#25F4EE' }}>{totalExpectedLabels}</span>
-                      <span style={{ color: 'var(--text-secondary)' }}> label{totalExpectedLabels !== 1 ? 's' : ''} → individual 4×6 pages</span>
+                      <span className="font-bold" style={{ color: '#25F4EE' }}>{expectedLabels}</span>
+                      <span style={{ color: 'var(--text-secondary)' }}> unique labels → 4×6 pages</span>
                     </p>
                   </div>
                   <p className="text-xs mt-1 ml-4" style={{ color: 'var(--text-muted)' }}>
-                    {config.labelsPerPage}/page × {pageInfo!.pageCount} pages = {totalExpectedLabels} output pages
+                    {pageInfo!.pageCount} pages ÷ {config.duplicateEvery} duplicates = {expectedLabels} labels
                   </p>
                 </div>
               )}
@@ -565,6 +748,24 @@ function App() {
                       Conversion complete — {result.labelCount} label{result.labelCount !== 1 ? 's' : ''} generated.
                     </p>
                   </div>
+
+                  {/* Skipped pages info */}
+                  {result.skippedPages > 0 && (
+                    <div
+                      className="p-3 rounded-lg flex items-center gap-2"
+                      style={{
+                        backgroundColor: 'rgba(37, 244, 238, 0.05)',
+                        border: '1px solid rgba(37, 244, 238, 0.15)',
+                      }}
+                    >
+                      <svg className="w-4 h-4 flex-shrink-0" fill="#25F4EE" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                      </svg>
+                      <p className="text-xs" style={{ color: 'var(--text-secondary)' }}>
+                        Removed {result.skippedPages} duplicate page{result.skippedPages !== 1 ? 's' : ''}
+                      </p>
+                    </div>
+                  )}
 
                   {/* Warnings */}
                   {result.warnings.length > 0 && (
@@ -721,10 +922,13 @@ function App() {
             🔒 All processing happens locally in your browser. No files are uploaded to any server.
           </p>
           <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
-            Output: exact 4 × 6 inch pages — ready for label printers.
+            Output: exact 4 × 6 inch pages — ready for Amazon AWD.
           </p>
         </div>
       </div>
+
+      {/* Help Modal */}
+      <HelpModal isOpen={showHelp} onClose={() => setShowHelp(false)} isDark={isDark} />
     </div>
   );
 }

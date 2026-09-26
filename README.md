@@ -1,25 +1,53 @@
 # TikTok FBT → Amazon 4×6 Label Converter
 
-A lightweight, client-side web application that converts TikTok FBT (Fulfilled by TikTok) duplicate-label PDFs into properly formatted Amazon-compatible 4×6 inch shipping label PDFs.
+A lightweight, client-side web application that converts TikTok FBT (Fulfilled by TikTok) duplicate-page PDFs into Amazon AWD-compliant 4×6 inch shipping label PDFs.
 
 ![TikTok Style](https://img.shields.io/badge/Theme-TikTok%20Style-25F4EE?style=flat-square)
 ![Client-Side](https://img.shields.io/badge/Processing-Client--Side-FE2C55?style=flat-square)
 ![No Backend](https://img.shields.io/badge/Backend-None-000000?style=flat-square)
 
-## 🎯 Purpose
+## 🎯 The Problem We Solve
 
-TikTok FBT generates shipping labels as PDFs with **duplicate labels stacked on each page** (typically 2 identical labels per page). Amazon's label printers expect **one label per 4×6 inch page**. This tool bridges that gap.
+### TikTok FBT Issues
+
+1. **Duplicate Carton Labels:** TikTok provides 2 identical labels per carton (intended for placement on both sides of the box), but Amazon AWD's scanning system only accepts **one label per carton**.
+
+2. **Incorrect Formatting and Sizing:** Manually removing the extra duplicate pages causes the document format to alter, making the labels larger than the required **4×6 inch format**, which Amazon rejects.
+
+### Old Manual Workaround (Before This Tool)
+
+1. Open the downloaded TikTok carton label PDF
+2. Go to `File > Print`
+3. Manually deselect every second duplicate page
+4. Save/print the trimmed pages into a new PDF
+5. Open ChatGPT, upload the trimmed PDF
+6. Ask ChatGPT to resize all labels to 4×6 inches
+7. Download the resized PDF
+
+⏱ **Time-consuming, error-prone, requires external tools**
+
+### The Solution (This Tool)
+
+1. **Upload** TikTok FBT PDF
+2. **Auto-detect** duplicate pages
+3. **Remove duplicates** (keep 1 of every 2)
+4. **Resize** to exact 4×6 inches
+5. **Download** Amazon-compliant PDF
+
+⚡ **Instant, automated, no external tools needed**
 
 ## ✨ Features
 
 - **Drag & drop** PDF upload
-- **Automatic detection** of label layout (vertical/horizontal, number of labels per page)
-- **Configurable layout** — adjust if auto-detection doesn't match your PDF
+- **Automatic duplicate detection** — removes every Nth duplicate page
+- **Configurable deduplication** — adjust if your PDF has a different pattern
 - **High-quality rendering** at 3× scale to preserve barcode/QR readability
-- **Exact 4×6 inch output** pages suitable for label printers
+- **Exact 4×6 inch output** pages suitable for Amazon AWD
 - **Client-side processing** — no data leaves your browser
 - **Dark & light mode** with TikTok-inspired design
 - **Preview** labels before downloading
+- **Sample PDF generator** for testing
+- **Help modal** explaining the problem and solution
 - **No authentication, no database, no backend**
 
 ## 🚀 Quick Start
@@ -39,9 +67,9 @@ npm run build
 
 1. **Upload** your TikTok FBT PDF (drag & drop or click to browse)
    - **No test file?** Download a sample PDF using the buttons below the upload zone
-   - Choose between 1-page (2 labels) or 3-page (6 labels) samples
-2. **Review** the detected page count and label configuration
-3. **Configure** layout if needed (labels per page, direction)
+   - Choose between 2-label (4 pages) or 5-label (10 pages) samples
+2. **Review** the detected page count
+3. **Configure** if needed (duplicate pattern, which page to keep)
 4. **Click** "Convert Labels"
 5. **Preview** the output to verify barcode readability
 6. **Download** the 4×6 PDF
@@ -50,42 +78,51 @@ npm run build
 
 The app includes built-in sample PDF generators for testing:
 
-- **1 Page (2 labels)** — Single page with 2 duplicate labels stacked vertically
-- **3 Pages (6 labels)** — Three pages with 2 labels each (6 total)
+- **2 Labels (4 pages)** — 2 unique labels, each duplicated on consecutive pages
+- **5 Labels (10 pages)** — 5 unique labels, each duplicated (10 total pages)
 
 These samples include:
 - Realistic shipping label layout (FROM/TO addresses)
 - Barcodes (Code 128 style)
 - QR codes
-- Order IDs and tracking numbers
+- Carton IDs and tracking numbers
 - Weight and service information
-
-Use these to verify the converter works correctly before processing your actual TikTok FBT PDFs.
 
 ## 🔧 Configuration
 
-If labels appear cut off or misaligned, use the **Configure** button to adjust:
-
 | Setting | Options | Default |
 |---------|---------|---------|
-| Labels per page | 1, 2, 3, 4 | 2 |
-| Layout direction | Vertical (stacked), Horizontal (side-by-side) | Auto-detected |
+| Duplicate every | 2, 3, 4 pages | 2 (TikTok FBT) |
+| Keep page | 1st, 2nd, 3rd in group | 1st (offset 0) |
 
-### When to adjust:
-- **1 label/page** — if source PDF has single full-page labels
-- **2 labels/page** — standard TikTok FBT format (default)
-- **3-4 labels/page** — if source has more labels per page
-- **Horizontal** — if labels are arranged left-to-right instead of top-to-bottom
+### How It Works
+
+**Input:** TikTok FBT PDF with duplicate pages
+```
+10 pages → Pages 1,2 are Label A | Pages 3,4 are Label B | Pages 5,6 are Label C | etc.
+```
+
+**Processing:**
+- Keep only odd pages (1, 3, 5, 7, 9)
+- Skip duplicate pages (2, 4, 6, 8, 10)
+- Render each kept page at 3× quality for barcode clarity
+- Place each label on its own 4×6 inch page
+
+**Output:** Amazon-compliant 4×6 PDF
+```
+5 pages → 5 unique labels, each on a 4×6 inch page
+```
 
 ## 🏗️ Architecture
 
 ```
 src/
-├── App.tsx              # Main UI component (TikTok-themed)
+├── App.tsx              # Main UI (TikTok-themed, help modal, theme toggle)
 ├── index.css            # TikTok color system & animations
 ├── main.tsx             # Entry point
 └── utils/
-    └── pdfProcessor.ts  # PDF parsing, label extraction, output generation
+    ├── pdfProcessor.ts  # PDF parsing, deduplication, output generation
+    └── samplePDF.ts     # Sample TikTok FBT PDF generator
 ```
 
 ### Key Libraries
@@ -100,15 +137,8 @@ src/
 ### Processing Pipeline
 
 ```
-Source PDF → pdf.js render (3× scale) → Canvas split → PNG data URLs → jsPDF 4×6 pages → Download
+Source PDF → pdf.js page info → Deduplicate pages → Render at 3× scale → PNG data URLs → jsPDF 4×6 pages → Download
 ```
-
-1. **Parse** — Read PDF page dimensions and count
-2. **Detect** — Determine label layout from page geometry
-3. **Render** — Each page rendered to high-res canvas (3× for barcode clarity)
-4. **Split** — Canvas divided into individual labels based on config
-5. **Generate** — Each label placed on its own 4×6 inch PDF page
-6. **Output** — Aspect-ratio-preserving placement with centering
 
 ## 📐 Output Specifications
 
@@ -116,7 +146,7 @@ Source PDF → pdf.js render (3× scale) → Canvas split → PNG data URLs → 
 - **Orientation:** Portrait
 - **Label placement:** Centered, aspect-ratio preserved
 - **Image quality:** PNG at 3× render scale (preserves barcode scanning)
-- **Format:** Standard PDF compatible with all label printers
+- **Format:** Standard PDF compatible with Amazon AWD and label printers
 
 ## 🔒 Privacy
 
@@ -127,17 +157,15 @@ Source PDF → pdf.js render (3× scale) → Canvas split → PNG data URLs → 
 
 ## 🧪 Testing Checklist
 
-Test with real TikTok FBT PDFs:
+Test with real TikTok FBT PDFs or the built-in samples:
 
-- [ ] Single label per page
-- [ ] Multiple labels per page (2, 3, 4)
-- [ ] Multiple source pages
-- [ ] Vertical layout (stacked)
-- [ ] Horizontal layout (side-by-side)
+- [ ] Single label (2 pages, 1 unique)
+- [ ] Multiple labels (10 pages, 5 unique)
+- [ ] Correct deduplication (no missing/duplicate labels)
 - [ ] Barcode readability after conversion
 - [ ] QR code readability after conversion
 - [ ] Correct 4×6 inch page dimensions
-- [ ] No missing or duplicated labels
+- [ ] Amazon AWD accepts the output PDF
 - [ ] Malformed PDF handling (graceful error)
 
 ## 🎨 Theme
@@ -159,4 +187,4 @@ MIT
 
 ---
 
-**Built for operational use.** Simple, reliable, no bloat.
+**Built for operational use.** Replaces the manual workaround of deleting pages + using ChatGPT. Simple, reliable, no bloat.
