@@ -183,36 +183,121 @@ function HelpModal({ isOpen, onClose, isDark }: { isOpen: boolean; onClose: () =
             </p>
           </div>
 
+          {/* Side-by-Side Comparison */}
+          <div className="grid grid-cols-2 gap-3">
+            <div className="p-3 rounded-lg" style={{ backgroundColor: 'rgba(254, 44, 85, 0.05)', border: '1px solid rgba(254, 44, 85, 0.2)' }}>
+              <p className="text-xs font-semibold mb-2 flex items-center gap-1" style={{ color: '#FE2C55' }}>
+                <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 000 2h1v2a1 1 0 102 0v-2h1a1 1 0 100-2H7z" clipRule="evenodd" />
+                </svg>
+                Old Way
+              </p>
+              <ul className="space-y-1 text-[10px]" style={{ color: 'var(--text-muted)' }}>
+                <li>⏱️ 10-15 min per batch</li>
+                <li>❌ Manual page deletion</li>
+                <li>❌ Upload to ChatGPT</li>
+                <li>❌ Wait for resize</li>
+                <li>❌ Error-prone</li>
+              </ul>
+            </div>
+            <div className="p-3 rounded-lg" style={{ backgroundColor: 'rgba(37, 244, 238, 0.05)', border: '1px solid rgba(37, 244, 238, 0.2)' }}>
+              <p className="text-xs font-semibold mb-2 flex items-center gap-1" style={{ color: '#25F4EE' }}>
+                <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                </svg>
+                This Tool
+              </p>
+              <ul className="space-y-1 text-[10px]" style={{ color: 'var(--text-muted)' }}>
+                <li>⚡ 5 seconds per batch</li>
+                <li>✅ Automatic deduplication</li>
+                <li>✅ Instant resize</li>
+                <li>✅ 100% accurate</li>
+                <li>✅ No external tools</li>
+              </ul>
+            </div>
+          </div>
+
           {/* How it works */}
           <div className="p-4 rounded-lg" style={{ backgroundColor: 'var(--bg-input)', border: '1px solid var(--border-color)' }}>
-            <h3 className="font-semibold text-sm mb-2" style={{ color: 'var(--text-primary)' }}>
+            <h3 className="font-semibold text-sm mb-3" style={{ color: 'var(--text-primary)' }}>
               How It Works
             </h3>
+            
+            {/* Visual Diagram */}
+            <div className="mb-4 p-3 rounded-lg" style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-color)' }}>
+              <p className="text-xs font-medium mb-2" style={{ color: 'var(--text-muted)' }}>Example: 5 Cartons</p>
+              
+              {/* Before */}
+              <div className="mb-3">
+                <p className="text-xs font-semibold mb-1 flex items-center gap-1" style={{ color: '#FE2C55' }}>
+                  <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                  </svg>
+                  TikTok FBT PDF (10 pages)
+                </p>
+                <div className="grid grid-cols-5 gap-1">
+                  {[1,2,3,4,5,6,7,8,9,10].map(page => (
+                    <div
+                      key={page}
+                      className="aspect-[4/6] rounded text-xs flex flex-col items-center justify-center p-1"
+                      style={{
+                        backgroundColor: page % 2 === 1 ? 'rgba(254, 44, 85, 0.1)' : 'rgba(254, 44, 85, 0.05)',
+                        border: '1px solid rgba(254, 44, 85, 0.2)',
+                      }}
+                    >
+                      <span className="font-bold" style={{ color: '#FE2C55' }}>P{page}</span>
+                      <span className="text-[8px]" style={{ color: 'var(--text-muted)' }}>
+                        {page % 2 === 1 ? `Label ${Math.ceil(page/2)}` : 'Duplicate'}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Arrow */}
+              <div className="flex justify-center my-2">
+                <svg className="w-5 h-5" fill="#25F4EE" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M10 3a1 1 0 011 1v10.586l3.293-3.293a1 1 0 111.414 1.414l-5 5a1 1 0 01-1.414 0l-5-5a1 1 0 111.414-1.414L9 14.586V4a1 1 0 011-1z" clipRule="evenodd" />
+                </svg>
+              </div>
+
+              {/* After */}
+              <div>
+                <p className="text-xs font-semibold mb-1 flex items-center gap-1" style={{ color: '#25F4EE' }}>
+                  <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                  </svg>
+                  Amazon-Compliant PDF (5 pages, 4×6")
+                </p>
+                <div className="grid grid-cols-5 gap-1">
+                  {[1,2,3,4,5].map(page => (
+                    <div
+                      key={page}
+                      className="aspect-[4/6] rounded text-xs flex flex-col items-center justify-center p-1"
+                      style={{
+                        backgroundColor: 'rgba(37, 244, 238, 0.1)',
+                        border: '1px solid rgba(37, 244, 238, 0.3)',
+                      }}
+                    >
+                      <span className="font-bold" style={{ color: '#25F4EE' }}>P{page}</span>
+                      <span className="text-[8px]" style={{ color: 'var(--text-muted)' }}>Label {page}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
             <div className="space-y-2 text-xs" style={{ color: 'var(--text-secondary)' }}>
               <p>
-                <strong>Input:</strong> TikTok FBT PDF with duplicate pages
-                <br />
-                <span style={{ color: 'var(--text-muted)' }}>
-                  Example: 10 pages → Pages 1,2 are Label A | Pages 3,4 are Label B | etc.
-                </span>
+                <strong>Processing Steps:</strong>
               </p>
-              <p>
-                <strong>Processing:</strong>
-                <br />
-                <span style={{ color: 'var(--text-muted)' }}>
-                  • Keep only odd pages (1, 3, 5, 7, 9)<br />
-                  • Skip duplicate pages (2, 4, 6, 8, 10)<br />
-                  • Render each kept page at 3× quality for barcode clarity<br />
-                  • Place each label on its own 4×6 inch page
-                </span>
-              </p>
-              <p>
-                <strong>Output:</strong> Amazon-compliant 4×6 PDF
-                <br />
-                <span style={{ color: 'var(--text-muted)' }}>
-                  Result: 5 pages → 5 unique labels, each on a 4×6 inch page
-                </span>
-              </p>
+              <ol className="list-decimal list-inside space-y-1" style={{ color: 'var(--text-muted)' }}>
+                <li>Keep only odd pages (1, 3, 5, 7, 9)</li>
+                <li>Skip duplicate pages (2, 4, 6, 8, 10)</li>
+                <li>Render each label at 3× quality for barcode clarity</li>
+                <li>Resize to exact 4×6 inches</li>
+                <li>Output Amazon-compliant PDF</li>
+              </ol>
             </div>
           </div>
 
@@ -735,18 +820,34 @@ function App() {
                 <div className="space-y-4 animate-slide-up">
                   {/* Success message */}
                   <div
-                    className="p-3 rounded-lg flex items-center gap-2"
+                    className="p-3 rounded-lg"
                     style={{
                       backgroundColor: isDark ? 'rgba(37, 244, 238, 0.08)' : 'rgba(37, 244, 238, 0.06)',
                       border: '1px solid rgba(37, 244, 238, 0.2)',
                     }}
                   >
-                    <svg className="w-5 h-5 flex-shrink-0" fill="#25F4EE" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                    </svg>
-                    <p className="text-sm font-medium" style={{ color: '#25F4EE' }}>
-                      Conversion complete — {result.labelCount} label{result.labelCount !== 1 ? 's' : ''} generated.
-                    </p>
+                    <div className="flex items-center gap-2 mb-2">
+                      <svg className="w-5 h-5 flex-shrink-0" fill="#25F4EE" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                      </svg>
+                      <p className="text-sm font-medium" style={{ color: '#25F4EE' }}>
+                        Conversion complete — Amazon AWD ready!
+                      </p>
+                    </div>
+                    <div className="grid grid-cols-3 gap-2 ml-7">
+                      <div>
+                        <p className="text-[10px]" style={{ color: 'var(--text-muted)' }}>Input</p>
+                        <p className="text-sm font-bold" style={{ color: 'var(--text-primary)' }}>{result.pageCount} pages</p>
+                      </div>
+                      <div>
+                        <p className="text-[10px]" style={{ color: 'var(--text-muted)' }}>Removed</p>
+                        <p className="text-sm font-bold" style={{ color: '#FE2C55' }}>-{result.skippedPages} duplicates</p>
+                      </div>
+                      <div>
+                        <p className="text-[10px]" style={{ color: 'var(--text-muted)' }}>Output</p>
+                        <p className="text-sm font-bold" style={{ color: '#25F4EE' }}>{result.labelCount} labels</p>
+                      </div>
+                    </div>
                   </div>
 
                   {/* Skipped pages info */}
