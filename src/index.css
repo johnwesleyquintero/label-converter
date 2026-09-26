@@ -1,1 +1,124 @@
 @import "tailwindcss";
+
+@theme {
+  --color-tiktok-cyan: #25F4EE;
+  --color-tiktok-red: #FE2C55;
+  --color-tiktok-black: #000000;
+  --color-tiktok-dark: #121212;
+  --color-tiktok-gray: #1E1E1E;
+  --color-tiktok-light-gray: #2F2F2F;
+  --color-tiktok-text: #E8E8E8;
+  --color-tiktok-text-muted: #A0A0A0;
+}
+
+/* Dark mode (default - TikTok style) */
+html.dark {
+  --bg-primary: #000000;
+  --bg-secondary: #121212;
+  --bg-card: #1E1E1E;
+  --bg-card-hover: #2F2F2F;
+  --bg-input: #2F2F2F;
+  --border-color: #333333;
+  --border-hover: #25F4EE;
+  --text-primary: #FFFFFF;
+  --text-secondary: #E8E8E8;
+  --text-muted: #A0A0A0;
+  --accent-cyan: #25F4EE;
+  --accent-red: #FE2C55;
+  --accent-cyan-hover: #5DF7F2;
+  --accent-red-hover: #FF4D73;
+  color-scheme: dark;
+}
+
+/* Light mode */
+html.light {
+  --bg-primary: #FFFFFF;
+  --bg-secondary: #F8F8F8;
+  --bg-card: #FFFFFF;
+  --bg-card-hover: #F5F5F5;
+  --bg-input: #F5F5F5;
+  --border-color: #E0E0E0;
+  --border-hover: #FE2C55;
+  --text-primary: #000000;
+  --text-secondary: #1A1A1A;
+  --text-muted: #666666;
+  --accent-cyan: #1AA8A3;
+  --accent-red: #FE2C55;
+  --accent-cyan-hover: #148C88;
+  --accent-red-hover: #E0254B;
+  color-scheme: light;
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* TikTok-style scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-cyan);
+}
+
+/* TikTok-style animations */
+@keyframes tiktok-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+@keyframes tiktok-slide-up {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes glitch-1 {
+  0%, 100% { transform: translate(0); }
+  20% { transform: translate(-2px, 2px); }
+  40% { transform: translate(-2px, -2px); }
+  60% { transform: translate(2px, 2px); }
+  80% { transform: translate(2px, -2px); }
+}
+
+@keyframes glitch-2 {
+  0%, 100% { transform: translate(0); }
+  20% { transform: translate(2px, -2px); }
+  40% { transform: translate(2px, 2px); }
+  60% { transform: translate(-2px, -2px); }
+  80% { transform: translate(-2px, 2px); }
+}
+
+.animate-slide-up {
+  animation: tiktok-slide-up 0.3s ease-out;
+}
+
+.animate-pulse-tiktok {
+  animation: tiktok-pulse 1.5s ease-in-out infinite;
+}
+
+/* TikTok-style button glow */
+.btn-tiktok-cyan {
+  position: relative;
+  overflow: hidden;
+}
+.btn-tiktok-cyan::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(37, 244, 238, 0.1), transparent);
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.btn-tiktok-cyan:hover::before {
+  opacity: 1;
+}

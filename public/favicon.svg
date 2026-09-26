@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="80" fill="#000000"/>
+  <!-- Cyan offset (left) -->
+  <g transform="translate(-8, -8)">
+    <rect x="130" y="80" width="252" height="340" rx="16" fill="none" stroke="#25F4EE" stroke-width="12"/>
+    <line x1="165" y1="140" x2="347" y2="140" stroke="#25F4EE" stroke-width="10" stroke-linecap="round"/>
+    <line x1="165" y1="180" x2="310" y2="180" stroke="#25F4EE" stroke-width="10" stroke-linecap="round"/>
+    <line x1="165" y1="220" x2="330" y2="220" stroke="#25F4EE" stroke-width="10" stroke-linecap="round"/>
+    <rect x="165" y="280" width="182" height="80" rx="4" fill="none" stroke="#25F4EE" stroke-width="6"/>
+    <line x1="175" y1="295" x2="175" y2="350" stroke="#25F4EE" stroke-width="4"/>
+    <line x1="185" y1="295" x2="185" y2="350" stroke="#25F4EE" stroke-width="6"/>
+    <line x1="197" y1="295" x2="197" y2="350" stroke="#25F4EE" stroke-width="3"/>
+    <line x1="207" y1="295" x2="207" y2="350" stroke="#25F4EE" stroke-width="5"/>
+    <line x1="218" y1="295" x2="218" y2="350" stroke="#25F4EE" stroke-width="4"/>
+    <line x1="228" y1="295" x2="228" y2="350" stroke="#25F4EE" stroke-width="7"/>
+    <line x1="241" y1="295" x2="241" y2="350" stroke="#25F4EE" stroke-width="3"/>
+    <line x1="250" y1="295" x2="250" y2="350" stroke="#25F4EE" stroke-width="5"/>
+    <line x1="261" y1="295" x2="261" y2="350" stroke="#25F4EE" stroke-width="4"/>
+    <line x1="272" y1="295" x2="272" y2="350" stroke="#25F4EE" stroke-width="6"/>
+    <line x1="284" y1="295" x2="284" y2="350" stroke="#25F4EE" stroke-width="3"/>
+    <line x1="294" y1="295" x2="294" y2="350" stroke="#25F4EE" stroke-width="5"/>
+    <line x1="305" y1="295" x2="305" y2="350" stroke="#25F4EE" stroke-width="4"/>
+    <line x1="316" y1="295" x2="316" y2="350" stroke="#25F4EE" stroke-width="6"/>
+    <line x1="328" y1="295" x2="328" y2="350" stroke="#25F4EE" stroke-width="3"/>
+    <line x1="337" y1="295" x2="337" y2="350" stroke="#25F4EE" stroke-width="5"/>
+  </g>
+  <!-- Red offset (right) -->
+  <g transform="translate(8, 8)">
+    <rect x="130" y="80" width="252" height="340" rx="16" fill="none" stroke="#FE2C55" stroke-width="12"/>
+    <line x1="165" y1="140" x2="347" y2="140" stroke="#FE2C55" stroke-width="10" stroke-linecap="round"/>
+    <line x1="165" y1="180" x2="310" y2="180" stroke="#FE2C55" stroke-width="10" stroke-linecap="round"/>
+    <line x1="165" y1="220" x2="330" y2="220" stroke="#FE2C55" stroke-width="10" stroke-linecap="round"/>
+    <rect x="165" y="280" width="182" height="80" rx="4" fill="none" stroke="#FE2C55" stroke-width="6"/>
+    <line x1="175" y1="295" x2="175" y2="350" stroke="#FE2C55" stroke-width="4"/>
+    <line x1="185" y1="295" x2="185" y2="350" stroke="#FE2C55" stroke-width="6"/>
+    <line x1="197" y1="295" x2="197" y2="350" stroke="#FE2C55" stroke-width="3"/>
+    <line x1="207" y1="295" x2="207" y2="350" stroke="#FE2C55" stroke-width="5"/>
+    <line x1="218" y1="295" x2="218" y2="350" stroke="#FE2C55" stroke-width="4"/>
+    <line x1="228" y1="295" x2="228" y2="350" stroke="#FE2C55" stroke-width="7"/>
+    <line x1="241" y1="295" x2="241" y2="350" stroke="#FE2C55" stroke-width="3"/>
+    <line x1="250" y1="295" x2="250" y2="350" stroke="#FE2C55" stroke-width="5"/>
+    <line x1="261" y1="295" x2="261" y2="350" stroke="#FE2C55" stroke-width="4"/>
+    <line x1="272" y1="295" x2="272" y2="350" stroke="#FE2C55" stroke-width="6"/>
+    <line x1="284" y1="295" x2="284" y2="350" stroke="#FE2C55" stroke-width="3"/>
+    <line x1="294" y1="295" x2="294" y2="350" stroke="#FE2C55" stroke-width="5"/>
+    <line x1="305" y1="295" x2="305" y2="350" stroke="#FE2C55" stroke-width="4"/>
+    <line x1="316" y1="295" x2="316" y2="350" stroke="#FE2C55" stroke-width="6"/>
+    <line x1="328" y1="295" x2="328" y2="350" stroke="#FE2C55" stroke-width="3"/>
+    <line x1="337" y1="295" x2="337" y2="350" stroke="#FE2C55" stroke-width="5"/>
+  </g>
+  <!-- White main label -->
+  <g>
+    <rect x="130" y="80" width="252" height="340" rx="16" fill="none" stroke="#FFFFFF" stroke-width="12"/>
+    <line x1="165" y1="140" x2="347" y2="140" stroke="#FFFFFF" stroke-width="10" stroke-linecap="round"/>
+    <line x1="165" y1="180" x2="310" y2="180" stroke="#FFFFFF" stroke-width="10" stroke-linecap="round"/>
+    <line x1="165" y1="220" x2="330" y2="220" stroke="#FFFFFF" stroke-width="10" stroke-linecap="round"/>
+    <rect x="165" y="280" width="182" height="80" rx="4" fill="none" stroke="#FFFFFF" stroke-width="6"/>
+    <line x1="175" y1="295" x2="175" y2="350" stroke="#FFFFFF" stroke-width="4"/>
+    <line x1="185" y1="295" x2="185" y2="350" stroke="#FFFFFF" stroke-width="6"/>
+    <line x1="197" y1="295" x2="197" y2="350" stroke="#FFFFFF" stroke-width="3"/>
+    <line x1="207" y1="295" x2="207" y2="350" stroke="#FFFFFF" stroke-width="5"/>
+    <line x1="218" y1="295" x2="218" y2="350" stroke="#FFFFFF" stroke-width="4"/>
+    <line x1="228" y1="295" x2="228" y2="350" stroke="#FFFFFF" stroke-width="7"/>
+    <line x1="241" y1="295" x2="241" y2="350" stroke="#FFFFFF" stroke-width="3"/>
+    <line x1="250" y1="295" x2="250" y2="350" stroke="#FFFFFF" stroke-width="5"/>
+    <line x1="261" y1="295" x2="261" y2="350" stroke="#FFFFFF" stroke-width="4"/>
+    <line x1="272" y1="295" x2="272" y2="350" stroke="#FFFFFF" stroke-width="6"/>
+    <line x1="284" y1="295" x2="284" y2="350" stroke="#FFFFFF" stroke-width="3"/>
+    <line x1="294" y1="295" x2="294" y2="350" stroke="#FFFFFF" stroke-width="5"/>
+    <line x1="305" y1="295" x2="305" y2="350" stroke="#FFFFFF" stroke-width="4"/>
+    <line x1="316" y1="295" x2="316" y2="350" stroke="#FFFFFF" stroke-width="6"/>
+    <line x1="328" y1="295" x2="328" y2="350" stroke="#FFFFFF" stroke-width="3"/>
+    <line x1="337" y1="295" x2="337" y2="350" stroke="#FFFFFF" stroke-width="5"/>
+  </g>
+</svg>
