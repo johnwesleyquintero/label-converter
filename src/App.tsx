@@ -351,6 +351,7 @@ function App() {
   const [showConfig, setShowConfig] = useState(false);
   const [showHelp, setShowHelp] = useState(false);
   const [previewPage, setPreviewPage] = useState(0);
+  const [previewZoom, setPreviewZoom] = useState(1);
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -478,6 +479,7 @@ function App() {
     setOutputUrl(null);
     setShowConfig(false);
     setPreviewPage(0);
+    setPreviewZoom(1);
     if (fileInputRef.current) fileInputRef.current.value = '';
   }, [outputUrl]);
 
@@ -889,44 +891,124 @@ function App() {
                   {result.labels.length > 0 && (
                     <div className="rounded-lg overflow-hidden" style={{ border: '1px solid var(--border-color)' }}>
                       <div
-                        className="px-3 py-2 flex items-center justify-between"
+                        className="px-3 py-2 flex items-center justify-between flex-wrap gap-2"
                         style={{ backgroundColor: 'var(--bg-input)', borderBottom: '1px solid var(--border-color)' }}
                       >
-                        <p className="text-xs font-medium" style={{ color: 'var(--text-muted)' }}>
-                          Preview — {previewPage + 1} of {result.labels.length}
-                        </p>
+                        <div className="flex items-center gap-2">
+                          <p className="text-xs font-medium" style={{ color: 'var(--text-muted)' }}>
+                            Preview — {previewPage + 1} of {result.labels.length}
+                          </p>
+                          {/* Page navigation */}
+                          <div className="flex items-center gap-1">
+                            <button
+                              onClick={() => setPreviewPage(Math.max(0, previewPage - 1))}
+                              disabled={previewPage === 0}
+                              className="px-2 py-0.5 text-xs rounded transition-colors disabled:opacity-30"
+                              style={{
+                                border: '1px solid var(--border-color)',
+                                color: 'var(--text-secondary)',
+                                backgroundColor: 'var(--bg-card)',
+                              }}
+                              title="Previous label"
+                            >
+                              ←
+                            </button>
+                            <button
+                              onClick={() => setPreviewPage(Math.min(result.labels.length - 1, previewPage + 1))}
+                              disabled={previewPage >= result.labels.length - 1}
+                              className="px-2 py-0.5 text-xs rounded transition-colors disabled:opacity-30"
+                              style={{
+                                border: '1px solid var(--border-color)',
+                                color: 'var(--text-secondary)',
+                                backgroundColor: 'var(--bg-card)',
+                              }}
+                              title="Next label"
+                            >
+                              →
+                            </button>
+                          </div>
+                        </div>
+
+                        {/* Zoom controls */}
                         <div className="flex items-center gap-1">
                           <button
-                            onClick={() => setPreviewPage(Math.max(0, previewPage - 1))}
-                            disabled={previewPage === 0}
-                            className="px-2 py-0.5 text-xs rounded transition-colors disabled:opacity-30"
+                            onClick={() => setPreviewZoom(Math.max(0.5, previewZoom - 0.25))}
+                            disabled={previewZoom <= 0.5}
+                            className="px-1.5 py-0.5 text-xs rounded transition-colors disabled:opacity-30 flex items-center gap-0.5"
                             style={{
                               border: '1px solid var(--border-color)',
                               color: 'var(--text-secondary)',
                               backgroundColor: 'var(--bg-card)',
                             }}
+                            title="Zoom out"
                           >
-                            ←
+                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM13 10H7" />
+                            </svg>
+                          </button>
+                          <span
+                            className="text-xs font-mono min-w-[3rem] text-center px-1 py-0.5 rounded"
+                            style={{
+                              color: 'var(--text-secondary)',
+                              backgroundColor: 'var(--bg-card)',
+                              border: '1px solid var(--border-color)',
+                            }}
+                          >
+                            {Math.round(previewZoom * 100)}%
+                          </span>
+                          <button
+                            onClick={() => setPreviewZoom(Math.min(3, previewZoom + 0.25))}
+                            disabled={previewZoom >= 3}
+                            className="px-1.5 py-0.5 text-xs rounded transition-colors disabled:opacity-30 flex items-center gap-0.5"
+                            style={{
+                              border: '1px solid var(--border-color)',
+                              color: 'var(--text-secondary)',
+                              backgroundColor: 'var(--bg-card)',
+                            }}
+                            title="Zoom in"
+                          >
+                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v6m3-3H7" />
+                            </svg>
                           </button>
                           <button
-                            onClick={() => setPreviewPage(Math.min(result.labels.length - 1, previewPage + 1))}
-                            disabled={previewPage >= result.labels.length - 1}
-                            className="px-2 py-0.5 text-xs rounded transition-colors disabled:opacity-30"
+                            onClick={() => setPreviewZoom(1)}
+                            disabled={previewZoom === 1}
+                            className="px-1.5 py-0.5 text-xs rounded transition-colors disabled:opacity-30"
                             style={{
                               border: '1px solid var(--border-color)',
                               color: 'var(--text-secondary)',
                               backgroundColor: 'var(--bg-card)',
                             }}
+                            title="Reset zoom"
                           >
-                            →
+                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+                            </svg>
                           </button>
                         </div>
                       </div>
-                      <div className="p-4 flex justify-center" style={{ backgroundColor: 'var(--bg-secondary)' }}>
-                        <div className="relative" style={{ maxWidth: '240px' }}>
+
+                      {/* Preview area - scrollable when zoomed */}
+                      <div
+                        className="p-4 flex justify-center overflow-auto"
+                        style={{
+                          backgroundColor: 'var(--bg-secondary)',
+                          maxHeight: '500px',
+                        }}
+                      >
+                        <div
+                          className="relative transition-transform duration-200 ease-out"
+                          style={{
+                            transform: `scale(${previewZoom})`,
+                            transformOrigin: 'top center',
+                            marginBottom: previewZoom > 1 ? `${(previewZoom - 1) * 100}%` : '0',
+                          }}
+                        >
                           <div
                             className="shadow-lg"
                             style={{
+                              width: '240px',
                               aspectRatio: '4/6',
                               border: '1px solid var(--border-color)',
                               backgroundColor: 'white',
@@ -936,13 +1018,16 @@ function App() {
                               src={result.labels[previewPage]}
                               alt={`Label ${previewPage + 1}`}
                               className="w-full h-full object-contain"
+                              style={{ imageRendering: previewZoom > 1.5 ? 'pixelated' : 'auto' }}
                             />
                           </div>
-                          <div className="flex items-center justify-center gap-1 mt-2">
-                            <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: '#25F4EE' }} />
-                            <p className="text-xs" style={{ color: 'var(--text-muted)' }}>4 × 6 inches</p>
-                            <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: '#FE2C55' }} />
-                          </div>
+                          {previewZoom === 1 && (
+                            <div className="flex items-center justify-center gap-1 mt-2">
+                              <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: '#25F4EE' }} />
+                              <p className="text-xs" style={{ color: 'var(--text-muted)' }}>4 × 6 inches</p>
+                              <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: '#FE2C55' }} />
+                            </div>
+                          )}
                         </div>
                       </div>
                     </div>
