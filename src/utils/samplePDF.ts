@@ -25,7 +25,8 @@ export function generateSamplePDF(numLabels: number = 2): Blob {
       if (labelNum > 1 || duplicate > 0) {
         pdf.addPage('letter', 'portrait');
       }
-      generateLabel(pdf, pageWidth, pageHeight, margin, labelNum, duplicate + 1);
+      // Both pages are EXACTLY identical (like real TikTok FBT)
+      generateLabel(pdf, pageWidth, pageHeight, margin, labelNum);
     }
   }
 
@@ -37,8 +38,7 @@ function generateLabel(
   pageWidth: number,
   pageHeight: number,
   margin: number,
-  labelNum: number,
-  duplicateNum: number
+  labelNum: number
 ) {
   const contentWidth = pageWidth - (margin * 2);
   const contentHeight = pageHeight - (margin * 2);
@@ -209,7 +209,7 @@ function generateLabel(
   // Footer info
   pdf.setFontSize(7);
   pdf.setFont('helvetica', 'normal');
-  pdf.text(`Label ${labelNum} | Page ${duplicateNum} of 2 (Duplicate)`, x + 0.2, currentY);
+  pdf.text(`Carton ${labelNum} | TikTok FBT`, x + 0.2, currentY);
   pdf.text('Amazon AWD Compliant Format', x + contentWidth - 2.5, currentY);
 }
 
